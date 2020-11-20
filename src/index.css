@@ -3,7 +3,7 @@ body {
     sans-serif, Apple Color Emoji, Segoe UI Emoji;
 }
 
-.outgoing-area {
+.outside-area {
   position: absolute;
   top: 0;
   left: 0;
@@ -41,10 +41,7 @@ body {
 }
 
 .issue {
-  display: flex;
-  flex: auto;
   height: auto;
-  flex-wrap: wrap;
   padding: 10px;
   background-color: #faf4fa;
   border: #faf4fa solid 1px;
@@ -56,6 +53,13 @@ body {
   /* border: #eeecee solid 1px; */
   border: #000000 solid 1px;
   background-color: #e6e0e6;
+}
+
+.issue-maindata {
+  display: flex;
+  flex: auto;
+  flex-wrap: wrap;
+  width: 100%;
 }
 
 .issue-title {
@@ -70,19 +74,19 @@ body {
 
 .issue-label {
   margin-right: 8px;
-  border-radius: 8px;
   padding: 0 7px;
   width: auto;
-  height: 20px;
+  height: 16px;
   white-space: nowrap;
+  align-self: center;
   font-size: 12px;
   font-weight: 500;
-  line-height: 18px;
   border: 1px solid transparent;
   border-radius: 2em;
 }
 
 .issue-metadata {
+  margin-top: 4px;
   display: block;
   line-height: 18px;
 }

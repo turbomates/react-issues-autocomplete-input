@@ -97,10 +97,11 @@ export const GithubIssueAutocomplete: React.FC<Props> = ({
 
   return (
     <>
-      <div className="outgoing-area" onClick={handleBlur} />
+      {isIssuesVisible && <div className="outside-area" onClick={handleBlur} />}
       <div className="autocomplete-input-container">
         <input
           className="autocomplete-input"
+          placeholder="Search React Issue"
           value={value}
           onInput={(event) => onChange(event.currentTarget.value)}
           onFocus={handleFocus}

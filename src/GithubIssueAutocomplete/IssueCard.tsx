@@ -14,8 +14,8 @@ export const IssueCard: React.FC<Props> = ({ issue, isFocused, onClick }) => (
     className={`issue ${isFocused ? "focused" : ""}`}
     onClick={onClick}
   >
-    <div className="issue-title">{issue.title}</div>
-    <span className="issue-labels">
+    <div className="issue-maindata">
+      <div className="issue-title">{issue.title}</div>
       {issue.labels.map((label) => (
         <span
           key={label.name}
@@ -28,7 +28,7 @@ export const IssueCard: React.FC<Props> = ({ issue, isFocused, onClick }) => (
           {label.name}
         </span>
       ))}
-    </span>
+    </div>
     <div className="issue-metadata">
       <span>
         #{issue.number} {issue.state}ed by {issue.user.login}
