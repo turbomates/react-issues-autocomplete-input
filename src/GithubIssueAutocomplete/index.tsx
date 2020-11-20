@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect, useReducer, useRef } from "react";
+import React, { useCallback, useEffect, useReducer } from "react";
 import { useDebounce } from "use-debounce";
 
 import { IssueCard } from "./IssueCard";
 import { loadIssues } from "./http";
 import { initialState, reducer } from "./reducer";
+import { Issue } from "../types";
 
 type Props = {
   value: string;
@@ -16,12 +17,18 @@ export const GithubIssueAutocomplete: React.FC<Props> = ({
   onChange,
   limit,
 }) => {
-  const ref = useRef<HTMLInputElement>(null);
-  const [query] = useDebounce(value, 800);
+  const [query] = useDebounce(value, 400);
   const [
-    { issues, focusedIssueNumber, isIssuesLoading, isIssuesVibible },
+    { issues, focusedIssueNumber, isIssuesLoading, isIssuesVisible },
     dispatch,
   ] = useReducer(reducer, initialState);
+
+  const pickIssue = useCallback(
+    (issue: Issue) => {
+      onChange(issue.title);
+    },
+    [onChange]
+  );
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -29,29 +36,27 @@ export const GithubIssueAutocomplete: React.FC<Props> = ({
         case "ArrowDown":
           event.preventDefault();
           dispatch({ type: "NEXT_ISSUE" });
-          return;
+          break;
         case "ArrowUp":
           event.preventDefault();
           dispatch({ type: "PREV_ISSUE" });
-          return;
+          break;
         case "Escape":
           event.preventDefault();
           dispatch({ type: "HIDE_ISSUES" });
-          return;
+          break;
         case "Enter":
           event.preventDefault();
           const focusedIssue = issues.find(
             (issue) => issue.number === focusedIssueNumber
           );
           if (focusedIssue) {
-            window.location.href = `https://github.com/facebook/react/issues/${focusedIssue.number}`;
+            pickIssue(focusedIssue);
           }
-          return;
-        default:
-          return;
+          break;
       }
     },
-    [focusedIssueNumber, issues]
+    [focusedIssueNumber, issues, pickIssue]
   );
 
   const handleFocus = () => {
@@ -61,12 +66,6 @@ export const GithubIssueAutocomplete: React.FC<Props> = ({
   const handleBlur = () => {
     dispatch({ type: "HIDE_ISSUES" });
   };
-
-  useEffect(() => {
-    if (focusedIssueNumber === null) {
-      ref.current?.focus();
-    }
-  }, [focusedIssueNumber]);
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
@@ -97,28 +96,36 @@ export const GithubIssueAutocomplete: React.FC<Props> = ({
   }, [query, limit]);
 
   return (
-    <div className="autocomplete">
-      <input
-        ref={ref}
-        className="autocomplete-input"
-        value={value}
-        onInput={(event) => onChange(event.currentTarget.value)}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-      />
-      {isIssuesLoading && <div className="autocomplete-loading" />}
-      {isIssuesVibible && issues.length > 0 && (
+    <>
+      <div className="outgoing-area" onClick={handleBlur} />
+      <div className="autocomplete-input-container">
+        <input
+          className="autocomplete-input"
+          value={value}
+          onInput={(event) => onChange(event.currentTarget.value)}
+          onFocus={handleFocus}
+        />
+        {isIssuesLoading && (
+          <div className="icon-container">
+            <div className="loader" />
+          </div>
+        )}
+      </div>
+      {isIssuesVisible && issues.length > 0 && (
         <div className="autocomplete-list">
           {issues.slice(0, limit).map((issue) => (
             <IssueCard
               key={issue.number}
               issue={issue}
               isFocused={issue.number === focusedIssueNumber}
+              onClick={() => {
+                pickIssue(issue);
+              }}
             />
           ))}
         </div>
       )}
-    </div>
+    </>
   );
 };
 

@@ -2,14 +2,14 @@ import { Issue } from "../types";
 
 export type State = {
   issues: Issue[];
-  isIssuesVibible: boolean;
+  isIssuesVisible: boolean;
   isIssuesLoading: boolean;
   focusedIssueNumber: number | null;
 };
 
 export const initialState: State = {
   issues: [],
-  isIssuesVibible: false,
+  isIssuesVisible: false,
   isIssuesLoading: false,
   focusedIssueNumber: null,
 };
@@ -33,7 +33,7 @@ export function reducer(state: State, action: Action): State {
         ...state,
         isIssuesLoading: false,
         issues: action.issues,
-        isIssuesVibible: true,
+        isIssuesVisible: true,
       };
     case "LOAD_ISSUES_FAILURE":
       return { ...state, isIssuesLoading: false, issues: [] };
@@ -42,19 +42,19 @@ export function reducer(state: State, action: Action): State {
       return {
         ...state,
         focusedIssueNumber: nextFocusedIssueNumber,
-        isIssuesVibible: true,
+        isIssuesVisible: true,
       };
     case "PREV_ISSUE":
       const prevFocusedIssueNumber = findPrevFocusedIssueNumber(state);
       return {
         ...state,
         focusedIssueNumber: prevFocusedIssueNumber,
-        isIssuesVibible: true,
+        isIssuesVisible: true,
       };
     case "HIDE_ISSUES":
-      return { ...state, isIssuesVibible: false, focusedIssueNumber: null };
+      return { ...state, isIssuesVisible: false, focusedIssueNumber: null };
     case "SHOW_ISSUES":
-      return { ...state, isIssuesVibible: true };
+      return { ...state, isIssuesVisible: true };
     case "CLEAR":
       return initialState;
     default:
